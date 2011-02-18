@@ -24,5 +24,17 @@ int main(int argc,char**argv){
 	cerr<<_2D2<<endl;
 	cerr<<(_2D+_2D2)<<endl;
 	cerr<<(_2D+a)<<endl;
+	
+	//test independence
+	Array< Array<int> > save2D=_2D;
 	cerr<<(--_2D)<<endl;
+	cerr<<(save2D)<<endl;
+	save2D.append(a);
+	cerr<<getDimensions(save2D)<<endl;
+	cerr<<getDimensions(a)<<endl;
+	Array<Array<Array<int > > > threeD;
+	threeD.append(_2D);
+	threeD.append(_2D2);
+	cerr<<threeD<<endl;
+	cerr<<getDimensions(threeD)<<endl;
 }

@@ -35,6 +35,7 @@
 #include <iostream>
 #include <vector>
 #include <stdarg.h>
+#include <typeinfo>
 using namespace std;
 
 template<typename _S>
@@ -93,6 +94,7 @@ ostream& operator << (ostream& os,const Array<_S>& _array){
 }
 
 
+
 template<typename _S>
 class Array: public vector<_S>
 {	
@@ -107,9 +109,9 @@ class Array: public vector<_S>
 					
 		};
 		
-		_S& operator[](int i){
-			return vector<_S>::operator[](i);
-		}
+		//_S& operator[](int i){
+		//	return vector<_S>::operator[](i);
+		//}
 		
 		Array operator+(const Array& right) const{
 			if(this->size()!=right.size()){
@@ -310,6 +312,59 @@ class Array: public vector<_S>
 			return snapShot;	
 		}
 		
+
+		
+		Array& append(const _S& _s){
+			this->push_back(_s);
+			return *this;	
+		}
+		
+
+		
 		friend ostream& operator << <_S>(ostream& os,const Array& _array);
 	
 };
+
+
+template<typename C> 
+Array<size_t> getDimensions(const Array< Array< Array<C> > > &_arr )
+{
+	Array<size_t> dimensions;
+	size_t firstDim=_arr.size();
+	dimensions.append(firstDim);
+	if(firstDim>0){
+		int secondDim=_arr[0].size();
+		dimensions.append(secondDim);
+		if(secondDim>0){
+			dimensions.append(_arr[0][0].size());	
+		}
+	}
+	else
+		dimensions.append(0);
+		
+	return dimensions;
+}
+
+template<typename C> 
+Array<size_t> getDimensions(const Array< Array<C> > &_arr )
+{
+	Array<size_t> dimensions;
+	size_t firstDim=_arr.size();
+	dimensions.append(firstDim);
+	if(firstDim>0)
+		dimensions.append(_arr[0].size());
+	else
+		dimensions.append(0);
+		
+	return dimensions;
+}
+
+template<typename C> 
+Array<size_t> getDimensions(const Array< C > &_arr )
+{
+	Array<size_t> dimensions;
+	size_t firstDim=_arr.size();
+	dimensions.append(firstDim);
+		
+	return dimensions;
+}
