@@ -31,7 +31,7 @@ public:
 	{
 		return size;
 	}
-	buffer(int _size=BUFFER_SIZE):size(0),data(NULL)
+	buffer(int _size=BUFFER_SIZE):data(NULL),size(0)
 	{
 		buf(_size);
 	}
