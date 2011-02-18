@@ -296,7 +296,19 @@ class Array: public vector<_S>
 			}
 			return *this;
 		}
-			
+		
+		Array operator++(int){
+			//clone this first
+			Array<_S> snapShot(*this);
+			++(*this);
+			return snapShot;
+		}	
+		
+		Array operator--(int){
+			Array<_S> snapShot(*this);
+			--(*this);
+			return snapShot;	
+		}
 		
 		friend ostream& operator << <_S>(ostream& os,const Array& _array);
 	
