@@ -1,3 +1,6 @@
+#ifndef ARRAY_H_
+#define ARRAY_H_
+
 /*****
  
  Copyright (c) 2011, Albert W. Cheng
@@ -368,3 +371,5 @@ Array<size_t> getDimensions(const Array< C > &_arr )
 		
 	return dimensions;
 }
+
+#endif /*ARRAY_H_*/
