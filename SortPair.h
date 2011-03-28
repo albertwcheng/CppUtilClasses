@@ -88,6 +88,12 @@ public:
 		return this->k1>obj.k1;
 		
 	}
+	
+	inline SortPair<T1,T2>& operator+=(const SortPair<T1,T2>& right){
+		this->k1+=right.k1;
+		this->k2+=right.k2;
+		return *this;
+	}
 };
 
 #define syn_rwaccessors(NAME,VAR,TYPE) inline void set_ ## NAME(const TYPE& _ ## NAME) \
