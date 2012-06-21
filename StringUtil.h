@@ -178,7 +178,7 @@ ostream& operator << ( ostream&os,const KeyPair<T1,T2>&k)
 class StringUtil
 {
 public:
-
+	
 	inline static string str(int d)
 	{
 		return str(d,"%d");
