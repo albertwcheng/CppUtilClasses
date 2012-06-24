@@ -56,13 +56,13 @@ class SystemUtil
 	    }
 		
 		
-		void mkdirs(const string&path){
+		inline static void mkdirs(const string&path){
 		
 			if( fexists(path)){
 				return;	
 			}
 			vector<string> components;
-			StringUtil::split(path,DS,components);
+			StringUtil::split(path,PATH_SEPARATOR,components);
 		
 				string curpath;
 				for(int i=0;i<components.size();i++)
