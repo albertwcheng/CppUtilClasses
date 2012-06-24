@@ -22,6 +22,10 @@
 #include <libgen.h>
 #include <string.h>
 #include <StringUtil.h>
+#include <sys/stat.h>
+#include <dirent.h>
+#include <string>
+using namespace std;
 
 #define PATH_SEPARATOR "/"
 
@@ -46,6 +50,33 @@ class SystemUtil
 		inline static string formPathFromComponents(const vector<string>& components){
 			return StringUtil::join<vector<string>,vector<string>::const_iterator>(components,PATH_SEPARATOR);
 		}
+		inline static bool fexists(const string& path){
+			struct stat sb;
+			return stat(path.c_str(),&sb)==0;
+	    }
+		
+		
+		void mkdirs(const string&path){
+		
+			if( fexists(path)){
+				return;	
+			}
+			vector<string> components;
+			StringUtil::split(path,DS,components);
+		
+				string curpath;
+				for(int i=0;i<components.size();i++)
+				{
+				curpath+=components[i]+"/";
+				if(!fexists(curpath)){
+				//cerr<<"try to make "<<curpath<<endl;
+				mkdir(curpath.c_str(),S_IRWXU | S_IRWXG | S_IRWXO);
+				}
+			}
+		
+		
+		}
+		
 };
 
 #endif /*_SYSTEM_UTIL_H*/

@@ -5,11 +5,13 @@
 #include <iostream>
 #include <fstream>
 #include <dirent.h>
-#include "StringUtil.h"
+#include "CppUtilClasses/StringUtil.h"
+#include "CppUtilClasses/SystemUtil.h"
+
 using namespace std;
 #include <inttypes.h>
 
-typedef unsigned int uint64;
+//typedef unsigned int int;
 //messages are stored in files
 // inboxes/<to>/<from>/<msgid>.txt
 #define DS "/"
@@ -18,8 +20,8 @@ typedef unsigned int uint64;
 class FileIPMLoop
 {
 	public:
-	map<string/*from*/,uint64/*msgidcur*/> inboxes;
-	map<string/*to*/,uint64/*msgidcur*/> outboxes;
+	map<string/*from*/,int/*msgidcur*/> inboxes;
+	map<string/*to*/,int/*msgidcur*/> outboxes;
 	
 	string messageRoot;
 	bool terminated;
@@ -28,8 +30,8 @@ class FileIPMLoop
 	string inboxPath;
 	
 	FileIPMLoop(string _messageRoot,string _name,int _delayTimeInSeconds):messageRoot(_messageRoot),name(_name),delayTime(_delayTimeInSeconds){
-		mkdirs(_messageRoot);
-		mkdirs(_messageRoot+DS+_name);
+		SystemUtil::mkdirs(_messageRoot);
+		SystemUtil::mkdirs(_messageRoot+DS+_name);
 		inboxPath=_messageRoot+DS+_name;
 	}
 	
@@ -44,12 +46,12 @@ class FileIPMLoop
 		}
 	}
 	
-	string formMessageName(const string& channelName,uint64 msgid){
+	string formMessageName(const string& channelName,int msgid){
 		return 	channelName+DS+StringUtil::str(msgid);
 	}
 	
 	
-	bool fexists(const string& path){
+	/*bool fexists(const string& path){
 		struct stat sb;
 		return stat(path.c_str(),&sb)==0;
 	}
@@ -73,19 +75,19 @@ class FileIPMLoop
 		}
 		
 		
-	}
+	}*/
 
 	
-	uint64 sendMessage(const string& recipient,const string& msg)
+	int sendMessage(const string& recipient,const string& msg)
 	{	
 		string channelName=formChannelName(recipient);
-		uint64 msgid;
-		map<string,uint64>::iterator i=outboxes.find(recipient);
+		int msgid;
+		map<string,int>::iterator i=outboxes.find(recipient);
 		if(i==outboxes.end()){
 			//new!
-			mkdirs(channelName);
+			SystemUtil::mkdirs(channelName);
 			msgid=1;
-			pair<map<string,uint64>::iterator,bool> result=outboxes.insert(map<string,uint64>::value_type(recipient,1));	
+			pair<map<string,int>::iterator,bool> result=outboxes.insert(map<string,int>::value_type(recipient,1));	
 			i=result.first;
 		}else{
 			
@@ -166,12 +168,12 @@ class FileIPMLoop
 				//new sender!
 				for(vector<string>::iterator i=senders.begin();i!=senders.end();i++){
 					if(inboxes.find(*i)==inboxes.end()){
-						inboxes.insert(map<string,uint64>::value_type(*i,1));	
+						inboxes.insert(map<string,int>::value_type(*i,1));	
 					}	
 				}	
 			}
 			
-			for(map<string,uint64>::iterator i=inboxes.begin();i!=inboxes.end() && !terminated;i++)
+			for(map<string,int>::iterator i=inboxes.begin();i!=inboxes.end() && !terminated;i++)
 			{
 			
 				//if receive a message evoke onReceivingMessage method
@@ -182,7 +184,7 @@ class FileIPMLoop
 				while(true){
 					string msgName=formMessageName(channelName,i->second);
 					
-					if(!fexists(msgName))
+					if(!SystemUtil::fexists(msgName))
 						break;
 					
 					getFileContent(msgName, msg);
