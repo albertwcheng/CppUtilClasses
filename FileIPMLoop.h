@@ -149,7 +149,10 @@ class FileIPMLoop
 		  return 0;
 		}
 		 
-		 
+	virtual void onLoop()
+	{
+			
+	}	 
 		 
 	void loop()
 	{
@@ -162,7 +165,13 @@ class FileIPMLoop
 			//cerr<<"check inbox"<<endl;
 			//check messages
 			//TODO go to inbox folder, list folders, if num of folders > inboxes.size() scan folder and add them as msgid=1
+			onLoop();
+			if(terminated)
+				break;
+			
 			listVisibleDir(inboxPath,senders);
+			
+			
 			
 			if(senders.size()>inboxes.size()){
 				//new sender!
