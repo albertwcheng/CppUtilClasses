@@ -51,31 +51,7 @@ class FileIPMLoop
 	}
 	
 	
-	/*bool fexists(const string& path){
-		struct stat sb;
-		return stat(path.c_str(),&sb)==0;
-	}
-	
-	void mkdirs(const string&path){
-		
-		if( fexists(path)){
-			return;	
-		}
-		vector<string> components;
-		StringUtil::split(path,DS,components);
-		
-		string curpath;
-		for(int i=0;i<components.size();i++)
-		{
-			curpath+=components[i]+"/";
-			if(!fexists(curpath)){
-				//cerr<<"try to make "<<curpath<<endl;
-				mkdir(curpath.c_str(),S_IRWXU | S_IRWXG | S_IRWXO);
-			}
-		}
-		
-		
-	}*/
+
 
 	
 	int sendMessage(const string& recipient,const string& msg)
@@ -165,6 +141,8 @@ class FileIPMLoop
 			//cerr<<"check inbox"<<endl;
 			//check messages
 			//TODO go to inbox folder, list folders, if num of folders > inboxes.size() scan folder and add them as msgid=1
+			
+			
 			onLoop();
 			if(terminated)
 				break;
@@ -228,6 +206,7 @@ class FileIPMLoop
 	
 	void terminate()
 	{
+		//cerr<<"terminate() called"<<endl;
 		terminated=true;
 	}
 	
