@@ -15,7 +15,7 @@ using namespace std;
 //messages are stored in files
 // inboxes/<to>/<from>/<msgid>.txt
 #define DS "/"
-
+#define TERMINATOR_SEQ "//@@EOM@@//"
 
 class FileIPMLoop
 {
@@ -28,11 +28,16 @@ class FileIPMLoop
 	string name;
 	int delayTime;	
 	string inboxPath;
+	int lTerminatorSeq;
+	string terminatorSeq;
 	
-	FileIPMLoop(string _messageRoot,string _name,int _delayTimeInSeconds):messageRoot(_messageRoot),name(_name),delayTime(_delayTimeInSeconds){
+	
+	FileIPMLoop(string _messageRoot,string _name,int _delayTimeInSeconds):messageRoot(_messageRoot),name(_name),delayTime(_delayTimeInSeconds),terminatorSeq(TERMINATOR_SEQ){
 		SystemUtil::mkdirs(_messageRoot);
 		SystemUtil::mkdirs(_messageRoot+DS+_name);
 		inboxPath=_messageRoot+DS+_name;
+		lTerminatorSeq=terminatorSeq.length();
+		
 	}
 	
 	
@@ -76,6 +81,7 @@ class FileIPMLoop
 		
 		ofstream fout(msgName.c_str());
 		fout<<msg; //<<endl;
+		fout<<TERMINATOR_SEQ;
 		fout.close();
 		
 		
@@ -175,6 +181,17 @@ class FileIPMLoop
 						break;
 					
 					getFileContent(msgName, msg);
+					
+					int lmsg=msg.length();
+					
+					if(lmsg<lTerminatorSeq || msg.substr(lmsg-lTerminatorSeq)!=terminatorSeq){
+						//cerr<<"not passing message "<<msg<<endl;
+						//cerr<<msg.substr(lmsg-lTerminatorSeq)<<endl;
+						break; //the msg has not been finished writting, wait for next round	
+					}
+					
+					msg.erase(lmsg-lTerminatorSeq);
+					
 					if(msg[0]=='!')
 					{
 						//system stuff
