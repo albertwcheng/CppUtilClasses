@@ -123,6 +123,14 @@ class Rotarray
 			}	
 		}
 	
+		void reset(){
+			startIndex=0;
+		}
+	
+		void setStartIndex(int _newStartIndex){
+			startIndex=_newStartIndex%size;
+		}
+	
 };
 
 template<typename T>
