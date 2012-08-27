@@ -1,19 +1,9 @@
 #ifndef _ROTARRAY_H
 #define _ROTARRAY_H
 
-#include <iostream.h>
+#include <iostream>
 
-template<typename T>
-ostream& operator<<(ostream& os,const Rotarray& obj){
-	if(obj.getSize()<1)
-		return;
-	
-	os<<"["<<obj[0];
-	for(int i=1;i<obj.getSize();i++){
-		os<<","<<obj[i];	
-	}
-	os<<"]";
-}
+
 
 
 template<typename T>
@@ -21,14 +11,14 @@ class Rotarray
 {
 	private:
 		T*data;
-		int starterIndex;
+		int startIndex;
 		int size;
 	public:
 		int getSize()const{
 			return size;
 		}
 		
-		Rotarray(int _size):size(_size):startIndex(0){
+		Rotarray(int _size):size(_size),startIndex(0){
 			data=new T[size];	
 		}
 		
@@ -51,13 +41,18 @@ class Rotarray
 		}
 		
 		
-		operator=(const Rotarray& right){
+		const Rotarray& operator=(const Rotarray& right){
 			copy(right);	
+			return *this;
 		}
 	
-		T& operator T[](int _offset){
-			return (_offset+starterIndex)%size;
+		T& operator [](int _offset){
+			return data[(_offset+startIndex)%size];
 		}
+		
+		const T& operator [](int _offset)const{
+			return data[(_offset+startIndex)%size];
+		}		
 		
 		~Rotarray(){
 			if(data)
@@ -68,8 +63,8 @@ class Rotarray
 			int sizeCompare=min(size,right.size);
 			
 			for(int i=0;i<sizeCompare;i++){
-				if((*this)[i]>right[i]){
-					return true;	
+				if((*this)[i]!=right[i]){
+					return (*this)[i]>right[i];	
 				}	
 			}
 			
@@ -80,8 +75,8 @@ class Rotarray
 		bool operator<(const Rotarray& right) const{
 			int sizeCompare=min(size,right.size);
 			for(int i=0;i<sizeCompare;i++){
-				if((*this)[i]<right[i]){
-					return true;	
+				if((*this)[i]!=right[i]){
+					return (*this)[i]<right[i];	
 				}	
 			}
 			
@@ -129,5 +124,18 @@ class Rotarray
 		}
 	
 };
+
+template<typename T>
+ostream& operator<<(ostream& os,const Rotarray<T>& obj){
+	if(obj.getSize()<1)
+		return os;
+	
+	os<<"["<<obj[0];
+	for(int i=1;i<obj.getSize();i++){
+		os<<","<<obj[i];	
+	}
+	os<<"]";
+	return os;
+}
 
 #endif
