@@ -533,6 +533,61 @@ public:
 		return vec;
 	}
 
+    inline static vector<string>& splitStringByString(const string haystack,const string& needle,vector<string>& vec,bool clear=true)
+	{
+        
+		int hslen=haystack.length();
+		int needlen=needle.length();
+		const char *shaystack=haystack.c_str();
+		char *hay=new char[hslen+1];
+		strcpy(hay,shaystack);
+		const char *sneedle=needle.c_str();
+        
+		if(clear)
+			vec.clear();
+        
+		int start=0;
+        
+        
+		for(int i=0;i<=hslen-needlen;i++)
+		{
+			//char c=hay[i];
+			bool found=false;
+			for(int j=0;j<needlen;j++)
+			{
+				if (sneedle[j]!=hay[i+j])
+                {
+                    break; //unmatch, break!
+                }
+                
+                found=true;
+			}
+			if(found)
+			{
+				hay[i]='\0';
+				vec.push_back((hay+start));
+				hay[i]=' ';
+				start=i+needlen;
+                i+=needlen;
+			}
+		}
+        
+		if(start<hslen)
+		{
+			vec.push_back( (shaystack+start));
+		}else if(start==hslen) //new sep 14 2009
+		{
+			vec.push_back("");
+		}
+        
+        
+		delete[] hay;
+		return vec;
+	}
+
+    
+    
+    
 	inline static vector<string>& splitNoEmpty(const string haystack,const string& needle,vector<string>& vec,bool clear=true)
 	{
 
