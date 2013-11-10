@@ -2,6 +2,7 @@
 #include <string>
 #include <regex>
 #include <algorithm>
+#include <fstream>
 
 #include <StringUtil.h>
 using namespace std;
@@ -41,6 +42,30 @@ bool charInString(char test, const char * str){
 	
     //cerr<<"cis:b"<<endl;
 	return false;
+}
+
+void getHeader(vector<string> &header,vector<string>& prestartRows,istream& fil,int headerRow, int startRow, const string& FS){
+    
+    int c=0;
+    while(fil.good()){
+        string lin;
+        
+        c++;
+        if(c>=startRow){
+            break;
+        }
+        
+        getline(fil,lin);
+        
+        if(c==headerRow){
+            StringUtil::split(lin,FS,header);
+        }
+        
+        if(c<startRow){
+            prestartRows.push_back(lin);
+        }
+
+    }
 }
 
 void multiColIndicesFromHeaderMergedByString(vector<int>& indices,const vector<string>& headerFields,const string& searchString,bool clearIndices=true){
@@ -190,8 +215,50 @@ void multiColJoinField(vector<int>& indices,const vector<string>& headerFields,c
         
     }
     
+    vector<string> splitons;
+    StringUtil::split(joinString,"%",splitons);
+    
+    string filename=splitons[0];
+    string sep;
+    if(splitons.size()>1){
+        sep=replaceSpecialChar(splitons[1]);
+    }else{
+        sep="\t";
+    }
+    
+    //vector<string> fieldsToInclude;
+    
+    ifstream fil(filename.c_str());
+    
+    while(fil.good()){
+        string line;
+        getline(fil,line);
+    
+        vector<string> lineSplittons;
+        StringUtil::split(line,sep,lineSplittons);
+        for(vector<string>::iterator i=lineSplittons.begin();i!=lineSplittons.end();i++){
+            //fieldsToInclude.push_back(*i);
+            string fieldKey=(*i);
+            for(int j=0;j<headerFields.size();j++){
+                if(headerFields[j]==fieldKey){
+                    indices.push_back(j);
+                }
+                
+            }
+        }
+        
+        
+    }
+    
+    
+    
+    
+    
+    fil.close();
+    
+    
     //to be implemented
-    cerr<<"multiColJoinField Not yet implemented"<<endl;
+    //cerr<<"multiColJoinField Not yet implemented"<<endl;
 }
 
 void rangeListFromSingleDirectonNoClear(int& sortMode,vector<int>& rangeValues,const vector<string>& headerFields, string col1rangesplit0,int transform){
