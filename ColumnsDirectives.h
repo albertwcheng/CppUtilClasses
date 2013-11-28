@@ -68,6 +68,7 @@ void getHeader(vector<string> &header,vector<string>& prestartRows,istream& fil,
     }
 }
 
+
 void multiColIndicesFromHeaderMergedByString(vector<int>& indices,const vector<string>& headerFields,const string& searchString,bool clearIndices=true){
     if(clearIndices){
         indices.clear();
@@ -406,3 +407,97 @@ vector<int> rangeListFromRangeStringAdv(const vector<string>& headerFields, cons
 vector<int> getCol0ListFromCol1ListStringAdv(const vector<string>& headerFields, const string& rangestring){
     return rangeListFromRangeStringAdv(headerFields,rangestring,-1);
 }
+
+//getHeader(vector<string> &header,vector<string>& prestartRows,istream& fil,int headerRow, int startRow, const string& FS)
+
+class FileColSelector{
+public:
+
+    
+    string filename;
+    string colstring;
+    int headerRow;
+    int startRow;
+    string fs;
+    
+    vector<string> header;
+    vector<string> preStartRows;
+    vector<int> columns0;
+    
+    FileColSelector():filename(""),colstring("1"),headerRow(1),startRow(2),fs("\t"){}
+    
+    void parse(){
+        
+        //cerr<<"parse "<<filename<<endl;
+        
+        columns0.clear();
+        header.clear();
+        preStartRows.clear();
+        //cerr<<"headerRow "<<headerRow<<endl;
+        //cerr<<"startRow "<<startRow<<endl;
+        //cerr<<"fs "<<fs<<endl;
+        ifstream fil(filename);
+        getHeader(this->header,this->preStartRows,fil,headerRow,startRow,fs);
+        fil.close();
+        
+        //cerr<<"preparse"<<endl;
+        
+        //cerr<<"fields# "<<this->header.size()<<endl;
+        
+        //for(vector<string>::iterator i=this->header.begin();i!=this->header.end();i++){
+        //    cerr<<(*i)<<endl;
+        //}
+        
+        columns0=getCol0ListFromCol1ListStringAdv(this->header,colstring);
+        
+        
+        
+        //cerr<<"size:"<<columns0.size()<<endl;
+        //for(vector<int>::iterator i=columns0.begin();i!=columns0.end();i++){
+        //    cerr<<(*i)<<endl;
+        //}
+        
+        
+    }
+    
+    FileColSelector(const string& _filename):filename(_filename),colstring("1"),headerRow(1),startRow(2),fs("\t"){
+        columns0.push_back(0);
+    }
+    
+    FileColSelector(const string& _filename, const string& _colstring,int _headerRow, int _startRow, const string& _fs,bool autoparse=true):filename(_filename),colstring(_colstring),headerRow(_headerRow),startRow(_startRow),fs(_fs){
+        if(autoparse){
+            parse();
+        }
+    }
+    
+    void setHeaderRow(int _headerRow){
+        headerRow=_headerRow;
+    }
+    
+    void setStartRow(int _startRow){
+        startRow=_startRow;
+    }
+    
+    void setFS(const string& _fs){
+        fs=_fs;
+    }
+    
+    void setColString(const string& _colstring,int _headerRow=-1,int _startRow=-1,const string& _fs="",bool autoparse=true){
+        this->colstring=_colstring;
+        if(_headerRow!=-1){
+            headerRow=_headerRow;
+        }
+        if(_startRow!=-1){
+            startRow=_startRow;
+        }
+        if(_fs!=""){
+            fs=_fs;
+        }
+        if(autoparse){
+            parse();
+        }
+
+    }
+    
+};
+
