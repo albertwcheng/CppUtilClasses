@@ -420,11 +420,17 @@ public:
     int startRow;
     string fs;
     
+    
     vector<string> header;
     vector<string> preStartRows;
     vector<int> columns0;
     
     FileColSelector():filename(""),colstring("1"),headerRow(1),startRow(2),fs("\t"){}
+    
+    int numFields(){
+        return header.size();
+    }
+    
     
     void parse(){
         

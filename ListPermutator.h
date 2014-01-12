@@ -16,7 +16,7 @@ public:
     virtual void onEnd(){} //run when runThroughList is finished
     
     
-    void runThroughList()
+    void runThroughLists()
     {
         vector<int> idx;
         int N=numOfLists();
@@ -26,6 +26,7 @@ public:
         }
         
         if(N==1){
+            //cerr<<"N=1"<<endl;
             for( idx[0]=0;idx[0]<sizes(0);idx[0]++){
                 if(!onItem(idx)){
                     return;
@@ -123,7 +124,7 @@ public:
         }
         
         SimpleIntPermutator perm(sizes);
-        perm.runThroughList();
+        perm.runThroughLists();
         
         return 0;
     }
