@@ -31,8 +31,32 @@ public:
         ifil.close();
     }
     
+    const BitString& operator-=(const BitString& _right){
+        for(uint64_t i=0;i<numBytes;i++){
+            _data[i]&=(~_right._data[i]);
+        }
+        
+        return *this;
+    }
     
-    void init(uint64_t _numBits)
+    const BitString& operator&=(const BitString& _right){
+        for(uint64_t i=0;i<numBytes;i++){
+            _data[i]&=_right._data[i];
+        }
+        
+        return *this;
+    }
+    
+    const BitString& operator|=(const BitString& _right){
+        for(uint64_t i=0;i<numBytes;i++){
+            _data[i]|=_right._data[i];
+        }
+        
+        return *this;
+    }
+    
+    
+    void init(uint64_t _numBits,Byte valuePerByte=0)
     {
         numBits=_numBits;
         numBytes=numBits/8;
@@ -42,7 +66,7 @@ public:
         
         _data=new Byte[numBytes];
         for(uint64_t i=0;i<numBytes;i++){
-            _data[i]=0;
+            _data[i]=valuePerByte;
         }
     }
     
